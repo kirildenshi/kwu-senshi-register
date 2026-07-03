@@ -1,0 +1,12 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: camp
+      POSTGRES_PASSWORD: camp_dev
+      POSTGRES_DB: kwu_senshi_registration_camp
+    ports: ["5433:5432"]
+    volumes: [postgres_data:/var/lib/postgresql/data]
+
+volumes:
+  postgres_data:

@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Enums ──────────────────────────────────────────────────────────────────
+
+enum Role {
+  ALLIANCE_MEMBER
+  DOJO_OPERATOR
+}
+
+enum ApplicationStatus {
+  SUBMITTED
+}
+
+enum DocumentType {
+  RANK_CERTIFICATE
+  DOJO_PROOF
+  GOVERNMENT_ID
+  INSURANCE
+}
+
+enum Sex {
+  MASCULINE
+  FEMININE
+  OTHER
+}
+
+// ─── Models ─────────────────────────────────────────────────────────────────
+
+model Account {
+  id           String   @id @default(uuid())
+  personId     String   @unique
+  person       Person   @relation(fields: [personId], references: [id])
+  email        String   @unique
+  passwordHash String
+  role         Role
+  lang         String   @default("en")
+  createdAt    DateTime @default(now())
+
+  application RegistrationApplication?
+}
+
+model Person {
+  id              String    @id @default(uuid())
+  name            String
+  sex             Sex?
+  dateOfBirth     DateTime?
+  countryOfOrigin String?
+
+  account Account?
+  contact Contact?
+}
+
+model Contact {
+  id       String @id @default(uuid())
+  personId String @unique
+  person   Person @relation(fields: [personId], references: [id])
+
+  telephone     String?
+  addressLine1  String?
+  city          String?
+  stateProvince String?
+  zipCode       String?
+  country       String?
+  governmentId  String?
+  cpf           String?
+  fatherName    String?
+  motherName    String?
+  medicalInsurance String?
+}
+
+model RegistrationApplication {
+  id        String            @id @default(uuid())
+  accountId String            @unique
+  account   Account           @relation(fields: [accountId], references: [id])
+  role      Role
+  status    ApplicationStatus @default(SUBMITTED)
+
+  // Alliance Member
+  currentRank String?
+
+  // Dojo shared between AM ("which club do you train at") and DO ("the dojo you're registering")
+  dojoName        String?
+  dojoAddress     String?
+  dojoCity        String?
+  dojoCountry     String?
+  dojoDescription String?
+
+  dataAccuracyDeclaration Boolean @default(false)
+  ageConfirmation         Boolean @default(false)
+  marketingConsent        Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  documents ApplicationDocument[]
+}
+
+model ApplicationDocument {
+  id            String                  @id @default(uuid())
+  applicationId String
+  application   RegistrationApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+
+  type          DocumentType
+  fileUrl       String
+  fileName      String
+  fileSizeBytes Int
+  mimeType      String
+  uploadedAt    DateTime     @default(now())
+}
