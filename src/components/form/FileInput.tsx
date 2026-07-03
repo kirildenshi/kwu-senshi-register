@@ -13,6 +13,8 @@ interface FileInputProps {
   /** Overrides the default 5MB max (and adds a floor — no minimum by default). */
   minSizeMB?: number;
   maxSizeMB?: number;
+  /** Skips the 400x400px minimum image dimension check below. */
+  skipDimensionCheck?: boolean;
   labels?: {
     upload_image?: string;
     upload_file?: string;
@@ -33,6 +35,7 @@ export default function FileInput({
   error,
   minSizeMB,
   maxSizeMB,
+  skipDimensionCheck,
   labels,
   ...ariaProps
 }: FileInputProps) {
@@ -77,26 +80,28 @@ export default function FileInput({
 
       // Image dimension validation
       if (file.type.startsWith('image/')) {
-        const valid = await new Promise<boolean>((resolve) => {
-          const img = new Image();
-          img.onload = () => {
-            URL.revokeObjectURL(img.src);
-            resolve(img.width >= MIN_IMAGE_DIM && img.height >= MIN_IMAGE_DIM);
-          };
-          img.onerror = () => {
-            URL.revokeObjectURL(img.src);
-            resolve(false);
-          };
-          img.src = URL.createObjectURL(file);
-        });
-        if (!valid) {
-          setFileError(
-            (labels?.min_dimensions ?? 'Image must be at least {dim}x{dim} pixels').replace(
-              /\{dim\}/g,
-              String(MIN_IMAGE_DIM),
-            ),
-          );
-          return;
+        if (!skipDimensionCheck) {
+          const valid = await new Promise<boolean>((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+              URL.revokeObjectURL(img.src);
+              resolve(img.width >= MIN_IMAGE_DIM && img.height >= MIN_IMAGE_DIM);
+            };
+            img.onerror = () => {
+              URL.revokeObjectURL(img.src);
+              resolve(false);
+            };
+            img.src = URL.createObjectURL(file);
+          });
+          if (!valid) {
+            setFileError(
+              (labels?.min_dimensions ?? 'Image must be at least {dim}x{dim} pixels').replace(
+                /\{dim\}/g,
+                String(MIN_IMAGE_DIM),
+              ),
+            );
+            return;
+          }
         }
         setPreview(URL.createObjectURL(file));
       }
@@ -104,7 +109,7 @@ export default function FileInput({
       setFileName(file.name);
       onChange(file);
     },
-    [accept, onChange, labels, minFileSize, maxFileSize],
+    [accept, onChange, labels, minFileSize, maxFileSize, skipDimensionCheck],
   );
 
   const handleClear = () => {

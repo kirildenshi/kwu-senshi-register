@@ -119,6 +119,7 @@ export default function FormField({ field, translations }: FormFieldProps) {
                 error={hasError}
                 minSizeMB={field.minSizeMB}
                 maxSizeMB={field.maxSizeMB}
+                skipDimensionCheck={field.skipDimensionCheck}
                 aria-describedby={hasError ? `${field.name}-error` : undefined}
                 labels={translations.fileLabels}
               />

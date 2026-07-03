@@ -34,7 +34,6 @@ export const ALLIANCE_MEMBER_FIELDS: FormFieldConfig[] = [
   { section: 'contact', name: 'zipCode', type: 'text', required: false, label: 'Zip / Postal Code' },
 
   // Identity (renders within the credentials step)
-  { section: 'identity', name: 'governmentId', type: 'text', required: false, label: 'Government ID / Passport Number' },
   { section: 'identity', name: 'cpf', type: 'text', required: false, label: 'CPF (Brazil only)', visibleWhen: { country: 'BR' } },
   { section: 'identity', name: 'fatherName', type: 'text', required: false, label: "Father's Name" },
   { section: 'identity', name: 'motherName', type: 'text', required: false, label: "Mother's Name" },
@@ -46,9 +45,9 @@ export const ALLIANCE_MEMBER_FIELDS: FormFieldConfig[] = [
   { section: 'martialArts', name: 'dojoCity', type: 'text', required: true, label: 'Dojo City' },
   { section: 'martialArts', name: 'dojoCountry', type: 'text', required: true, label: 'Dojo Country' },
 
-  // Credentials — document uploads
+  // Credentials — document uploads (Current Photo first)
+  { section: 'credentials', name: 'governmentIdDoc', type: 'file', required: true, label: 'Current Photo', accept: 'image/*', minSizeMB: 1, maxSizeMB: 2, skipDimensionCheck: true },
   { section: 'credentials', name: 'rankCertificate', type: 'file', required: false, label: 'Rank Certificate (scan/photo)' },
-  { section: 'credentials', name: 'governmentIdDoc', type: 'file', required: true, label: 'Current Photo', accept: 'image/*', minSizeMB: 1, maxSizeMB: 2 },
   { section: 'credentials', name: 'insuranceDoc', type: 'file', required: false, label: 'Insurance Document' },
 ];
 
@@ -69,7 +68,6 @@ export const DOJO_OPERATOR_FIELDS: FormFieldConfig[] = [
   { section: 'contact', name: 'zipCode', type: 'text', required: false, label: 'Zip / Postal Code' },
 
   // Identity (renders within the credentials step)
-  { section: 'identity', name: 'governmentId', type: 'text', required: false, label: 'Government ID / Passport Number' },
   { section: 'identity', name: 'cpf', type: 'text', required: false, label: 'CPF (Brazil only)', visibleWhen: { country: 'BR' } },
   { section: 'identity', name: 'fatherName', type: 'text', required: false, label: "Father's Name" },
   { section: 'identity', name: 'motherName', type: 'text', required: false, label: "Mother's Name" },
@@ -82,10 +80,10 @@ export const DOJO_OPERATOR_FIELDS: FormFieldConfig[] = [
   { section: 'dojoDetails', name: 'dojoCountry', type: 'text', required: true, label: 'Dojo Country' },
   { section: 'dojoDetails', name: 'dojoDescription', type: 'text', required: false, label: 'Dojo Description' },
 
-  // Credentials — document uploads
+  // Credentials — document uploads (Current Photo first)
+  { section: 'credentials', name: 'governmentIdDoc', type: 'file', required: true, label: 'Current Photo', accept: 'image/*', minSizeMB: 1, maxSizeMB: 2, skipDimensionCheck: true },
   { section: 'credentials', name: 'rankCertificate', type: 'file', required: true, label: 'Rank Certificate' },
   { section: 'credentials', name: 'dojoProof', type: 'file', required: true, label: 'Dojo/Gym Proof (lease, registration, or photo)' },
-  { section: 'credentials', name: 'governmentIdDoc', type: 'file', required: true, label: 'Current Photo', accept: 'image/*', minSizeMB: 1, maxSizeMB: 2 },
   { section: 'credentials', name: 'insuranceDoc', type: 'file', required: false, label: 'Insurance Document' },
 ];
 

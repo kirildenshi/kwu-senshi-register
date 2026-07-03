@@ -37,6 +37,8 @@ export interface FormFieldConfig {
   /** File fields only — overrides FileInput's default min/max size (5MB max, no min). */
   minSizeMB?: number;
   maxSizeMB?: number;
+  /** File fields only — skips FileInput's default 400x400px minimum image dimension check. */
+  skipDimensionCheck?: boolean;
 }
 
 export interface FormConfigResponse {
