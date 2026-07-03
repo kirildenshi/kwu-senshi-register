@@ -38,20 +38,20 @@ ENV HOSTNAME=0.0.0.0
 ENV NO_UPDATE_NOTIFIER=1
 ENV NPM_CONFIG_UPDATE_NOTIFIER=false
 
-RUN groupadd --system --gid 1001 nodejs && \
-    useradd --system --uid 1001 --gid nodejs nextjs
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder /app/next.config.mjs ./next.config.mjs
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
 
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
-COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
-COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder --chown=nextjs:nodejs /app/next.config.mjs ./next.config.mjs
-COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
-
-USER nextjs
-
+# Runs as root (not a non-root user) — the /app/public/uploads Railway volume
+# mounts as root:root, and a non-root user has no write access to it. This is
+# a single-tenant internal app, so the tradeoff is acceptable; switching users
+# at runtime (su/gosu) was avoided because this platform kills any Node
+# process that isn't the container's actual PID 1 (see the CMD comment below).
 EXPOSE 3000
 
 # `exec` on the final command replaces the shell process in place, so
