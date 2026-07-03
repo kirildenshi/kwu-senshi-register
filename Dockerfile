@@ -54,4 +54,7 @@ USER nextjs
 
 EXPOSE 3000
 
-CMD ["node", "-e", "console.log('DIRECT_PID1_OK'); setInterval(() => console.log('tick'), 5000)"]
+# `exec` on the final command replaces the shell process in place, so
+# `next start` ends up running as PID 1 instead of as a child of `sh` —
+# child Node processes under this platform's `sh` get killed outright.
+CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy && exec node_modules/.bin/next start"]
