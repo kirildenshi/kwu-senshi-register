@@ -61,8 +61,7 @@ export default async function DojoOperatorRegisterPage({
           dojoProof: t2('field.dojoProof'),
           insuranceDoc: t2('field.insuranceDoc'),
         }}
-        fieldHelperOverrides={{ dateOfBirth: t2('helper.dateOfBirth') }}
-        minAge={0}
+        minAge={16}
         gdprFieldsOverride={GDPR_FIELDS_V2}
       />
     </div>

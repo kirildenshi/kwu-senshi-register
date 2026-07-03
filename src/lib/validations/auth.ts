@@ -106,13 +106,26 @@ export const fullRegistrationSchema = z
     { message: 'Password cannot contain part of your email', path: ['password'] },
   )
   .superRefine((data, ctx) => {
+    if (!data.dateOfBirth) return;
+    const age = calculateAge(data.dateOfBirth);
+    if (age === null) return;
+
+    // Dojo Operator: flat 16+ requirement, no guardian exception.
+    if (data.role === 'DOJO_OPERATOR') {
+      if (age < 16) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'You must be at least 16 years old to register.',
+          path: ['dateOfBirth'],
+        });
+      }
+      return;
+    }
+
     // Minor/guardian gate (Alliance Member only, mirrors the client-side
     // check in registration.ts's buildRegistrationSchema — this is the copy
     // that's actually authoritative, since the server never trusts the client).
     if (data.role !== 'ALLIANCE_MEMBER') return;
-    if (!data.dateOfBirth) return;
-    const age = calculateAge(data.dateOfBirth);
-    if (age === null) return;
 
     const isGuardian = data.isMinorGuardian === true;
     if (!isGuardian && age < 16) {
