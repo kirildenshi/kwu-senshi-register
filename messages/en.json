@@ -1,4 +1,11 @@
 {
+  "common": {
+    "select_date": "Select date",
+    "step_of": "Step {current} of {total}",
+    "aria": {
+      "remove_file": "Remove file"
+    }
+  },
   "auth": {
     "register": {
       "title": "JOIN KWU SENSHI",

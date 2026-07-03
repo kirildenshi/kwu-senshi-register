@@ -1,4 +1,11 @@
 {
+  "common": {
+    "select_date": "Изберете дата",
+    "step_of": "Стъпка {current} от {total}",
+    "aria": {
+      "remove_file": "Премахни файла"
+    }
+  },
   "auth": {
     "register": {
       "title": "ПРИСЪЕДИНЕТЕ СЕ КЪМ KWU SENSHI",
