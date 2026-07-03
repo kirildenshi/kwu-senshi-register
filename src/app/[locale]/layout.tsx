@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import ToastProvider from '@/components/providers/ToastProvider';
 import ScrollToTop from '@/components/providers/ScrollToTop';
+import LanguageSwitcher from '@/components/layout/LanguageSwitcher';
 
 const bebasNeue = localFont({
   src: [
@@ -68,6 +69,7 @@ export default async function LocaleLayout({
       <body>
         <ScrollToTop />
         <NextIntlClientProvider messages={messages}>
+          <LanguageSwitcher />
           {children}
         </NextIntlClientProvider>
         <ToastProvider />
