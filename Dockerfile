@@ -35,6 +35,8 @@ ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
+ENV NO_UPDATE_NOTIFIER=1
+ENV NPM_CONFIG_UPDATE_NOTIFIER=false
 
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
@@ -52,5 +54,7 @@ USER nextjs
 
 EXPOSE 3000
 
-# Apply pending DB migrations before starting — idempotent.
-CMD ["sh", "-c", "npx prisma migrate deploy && npm run start"]
+# Apply pending DB migrations before starting — idempotent. Uses direct
+# binary paths (not npx/npm run) to avoid npm's update-notifier network
+# call delaying startup.
+CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node_modules/.bin/next start"]
