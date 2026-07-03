@@ -5,7 +5,7 @@
     "buildCommand": "npx prisma generate && npm run build"
   },
   "deploy": {
-    "startCommand": "node_modules/.bin/prisma migrate deploy; echo MIGRATE_EXIT=$?; echo ABOUT_TO_START_NEXT; node_modules/.bin/next start; echo NEXT_EXIT=$?; sleep 30",
+    "startCommand": "echo BEFORE_NODE; node -e \"console.log('NODE_RAN')\"; echo AFTER_NODE; sleep 30; echo AFTER_SLEEP",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
