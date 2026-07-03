@@ -4,6 +4,8 @@ WORKDIR /app
 RUN apk add --no-cache openssl libc6-compat
 
 COPY package.json package-lock.json* ./
+COPY prisma ./prisma
+COPY prisma.config.ts ./
 RUN npm ci --frozen-lockfile
 
 FROM node:20-alpine AS builder
