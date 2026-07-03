@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { isLatinName, isLatinText } from '@/lib/i18n/latin-text';
+import { calculateAge } from '@/lib/utils/age';
 
 const LATIN_NAME_MSG = 'Name must use Latin letters only (no Cyrillic)';
 const LATIN_TEXT_MSG = 'This field must use Latin characters only (no Cyrillic)';
@@ -53,6 +54,15 @@ export const fullRegistrationSchema = z
     dateOfBirth: z.string().optional().or(z.literal('')),
     countryOfOrigin: z.string().min(1),
 
+    // Minor/guardian consent (Alliance Member only) — see the superRefine
+    // below for the actual age-gate and conditional-required enforcement.
+    isMinorGuardian: z.boolean().optional(),
+    parentFullName: z.string().refine(isLatinName, LATIN_NAME_MSG).optional().or(z.literal('')),
+    parentPhone: z.string().refine(
+      (val) => !val || /^\+[1-9]\d{1,14}$/.test(val.replace(/[\s\-().]/g, '')),
+      'Use international format: +1234567890',
+    ).optional().or(z.literal('')),
+
     // Contact
     telephone: z.string().min(1),
     addressLine1: z.string().min(1).refine(isLatinText, LATIN_TEXT_MSG),
@@ -94,4 +104,30 @@ export const fullRegistrationSchema = z
       return !data.password.toLowerCase().includes(username);
     },
     { message: 'Password cannot contain part of your email', path: ['password'] },
-  );
+  )
+  .superRefine((data, ctx) => {
+    // Minor/guardian gate (Alliance Member only, mirrors the client-side
+    // check in registration.ts's buildRegistrationSchema — this is the copy
+    // that's actually authoritative, since the server never trusts the client).
+    if (data.role !== 'ALLIANCE_MEMBER') return;
+    if (!data.dateOfBirth) return;
+    const age = calculateAge(data.dateOfBirth);
+    if (age === null) return;
+
+    const isGuardian = data.isMinorGuardian === true;
+    if (!isGuardian && age < 16) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'You must be at least 16 years old to register. If you are under 16, please have a parent or guardian register on your behalf.',
+        path: ['dateOfBirth'],
+      });
+    }
+    if (isGuardian) {
+      if (!data.parentFullName || data.parentFullName.trim() === '') {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'This field is required', path: ['parentFullName'] });
+      }
+      if (!data.parentPhone || data.parentPhone.trim() === '') {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'This field is required', path: ['parentPhone'] });
+      }
+    }
+  });

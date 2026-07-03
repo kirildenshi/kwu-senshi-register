@@ -25,7 +25,7 @@ interface FormFieldProps {
     optionalLabel?: string;
     strengthLabels?: Record<string, string>;
     requirementLabels?: Record<string, string>;
-    fileLabels?: Record<string, string>;
+    fileLabels?: Record<string, string | undefined>;
     toggleLabels?: { show: string; hide: string };
   };
 }
@@ -117,12 +117,15 @@ export default function FormField({ field, translations }: FormFieldProps) {
                 accept={field.accept}
                 onChange={rhfField.onChange}
                 error={hasError}
+                minSizeMB={field.minSizeMB}
+                maxSizeMB={field.maxSizeMB}
                 aria-describedby={hasError ? `${field.name}-error` : undefined}
                 labels={translations.fileLabels}
               />
             )}
           />
         </div>
+        <HelperText text={translations.helper} />
         <FormError fieldName={field.name} message={errorMessage} />
       </div>
     );

@@ -70,6 +70,9 @@
         "fullName": "Full Name",
         "sex": "Gender",
         "dateOfBirth": "Date of Birth",
+        "isMinorGuardian": "I am a parent/guardian registering a minor (under 16)",
+        "parentFullName": "Parent/Guardian Full Name (as on ID)",
+        "parentPhone": "Parent/Guardian Contact Phone",
         "maritalStatus": "Marital Status",
         "heightCm": "Height (cm)",
         "weightKg": "Weight (kg)",
@@ -102,7 +105,7 @@
         "dojoDescription": "Dojo Description",
         "dojoId": "Dojo / Club",
         "rankCertificate": "Rank Certificate (scan/photo)",
-        "governmentIdDoc": "Government ID (scan/photo)",
+        "governmentIdDoc": "Current Photo",
         "insuranceDoc": "Insurance Document",
         "termsAccepted": "I accept the Terms & Conditions",
         "password": "Password",
@@ -175,6 +178,8 @@
         "upload_file": "Drag & drop or click to upload file",
         "unsupported_type": "Unsupported file type",
         "too_large": "File must be under 5 MB",
+        "too_large_custom": "File must be under {size} MB",
+        "too_small": "File must be at least {size} MB",
         "min_dimensions": "Image must be at least {dim}x{dim} pixels"
       },
       "optional": "(optional)",
@@ -208,12 +213,13 @@
         "cpf": "11-digit Brazilian tax ID",
         "governmentId": "Passport number or national ID card number",
         "fullName": "As shown on your official ID",
-        "trainingStart": "Approximate date when you began training"
+        "trainingStart": "Approximate date when you began training",
+        "governmentIdDoc": "Please upload a photo of yourself in your karate gi",
+        "parentPhone": "International format, e.g. +359888123456"
       },
       "select": {
         "MASCULINE": "Male",
         "FEMININE": "Female",
-        "OTHER": "Other",
         "SINGLE": "Single",
         "MARRIED": "Married",
         "WHATSAPP": "WhatsApp",

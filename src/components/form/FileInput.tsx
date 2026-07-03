@@ -10,16 +10,20 @@ interface FileInputProps {
   onChange: (file: File | null) => void;
   error?: boolean;
   'aria-describedby'?: string;
+  /** Overrides the default 5MB max (and adds a floor — no minimum by default). */
+  minSizeMB?: number;
+  maxSizeMB?: number;
   labels?: {
     upload_image?: string;
     upload_file?: string;
     unsupported_type?: string;
     too_large?: string;
+    too_small?: string;
     min_dimensions?: string;
   };
 }
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const DEFAULT_MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MIN_IMAGE_DIM = 400;
 
 export default function FileInput({
@@ -27,9 +31,13 @@ export default function FileInput({
   accept,
   onChange,
   error,
+  minSizeMB,
+  maxSizeMB,
   labels,
   ...ariaProps
 }: FileInputProps) {
+  const minFileSize = minSizeMB ? minSizeMB * 1024 * 1024 : 0;
+  const maxFileSize = maxSizeMB ? maxSizeMB * 1024 * 1024 : DEFAULT_MAX_FILE_SIZE;
   const ta = useTranslations('common.aria');
   const [preview, setPreview] = useState<string | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -58,8 +66,12 @@ export default function FileInput({
       }
 
       // Size validation
-      if (file.size > MAX_FILE_SIZE) {
+      if (file.size > maxFileSize) {
         setFileError(labels?.too_large ?? 'File must be under 5 MB');
+        return;
+      }
+      if (minFileSize > 0 && file.size < minFileSize) {
+        setFileError(labels?.too_small ?? 'File is too small');
         return;
       }
 
@@ -92,7 +104,7 @@ export default function FileInput({
       setFileName(file.name);
       onChange(file);
     },
-    [accept, onChange, labels],
+    [accept, onChange, labels, minFileSize, maxFileSize],
   );
 
   const handleClear = () => {

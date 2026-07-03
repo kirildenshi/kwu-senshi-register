@@ -42,7 +42,10 @@ export function getFieldTranslations(t: Translator, field: FormFieldConfig) {
       upload_image: t('file.upload_image'),
       upload_file: t('file.upload_file'),
       unsupported_type: t('file.unsupported_type'),
-      too_large: t('file.too_large'),
+      too_large: field.maxSizeMB
+        ? t('file.too_large_custom', { size: field.maxSizeMB })
+        : t('file.too_large'),
+      too_small: field.minSizeMB ? t('file.too_small', { size: field.minSizeMB }) : undefined,
       min_dimensions: t('file.min_dimensions', { dim: 400 }),
     },
     toggleLabels: {

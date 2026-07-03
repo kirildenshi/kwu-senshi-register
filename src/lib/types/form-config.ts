@@ -31,9 +31,12 @@ export interface FormFieldConfig {
   /** Runtime-resolved options populated by FormRenderer when dataSource is set. Not stored in CMS. */
   resolvedOptions?: Array<{ value: string; label: string }>;
   accept?: string;
-  visibleWhen?: Record<string, string>;
+  visibleWhen?: Record<string, string | boolean>;
   min?: string;
   max?: string;
+  /** File fields only — overrides FileInput's default min/max size (5MB max, no min). */
+  minSizeMB?: number;
+  maxSizeMB?: number;
 }
 
 export interface FormConfigResponse {

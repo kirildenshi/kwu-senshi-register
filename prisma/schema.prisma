@@ -72,6 +72,11 @@ model Contact {
   fatherName    String?
   motherName    String?
   medicalInsurance String?
+
+  // Set only when a parent/guardian is registering a minor (Alliance Member)
+  isMinorGuardian Boolean @default(false)
+  parentFullName  String?
+  parentPhone     String?
 }
 
 model RegistrationApplication {

@@ -48,7 +48,7 @@ function LanguageSwitcherInner() {
 export default function LanguageSwitcher() {
   return (
     <div
-      className="fixed top-4 right-4 z-50 flex items-center gap-0.5 rounded-full border border-senshi-black-20 bg-senshi-black-8/90 p-1 shadow-modal backdrop-blur-sm sm:top-6 sm:right-6"
+      className="absolute top-4 right-4 z-50 flex items-center gap-0.5 rounded-full border border-senshi-black-20 bg-senshi-black-8/90 p-1 shadow-modal backdrop-blur-sm sm:top-6 sm:right-6"
       role="group"
       aria-label="Language"
     >

@@ -9,7 +9,7 @@ import { hashPassword } from '@/lib/auth-utils';
 import { NOT_A_MEMBER_DOJO_ID } from '@/data/form-configs';
 import type { Sex } from '@prisma/client';
 
-const BOOLEAN_FIELDS = ['ageConfirmation', 'dataAccuracyDeclaration', 'marketingConsent'];
+const BOOLEAN_FIELDS = ['ageConfirmation', 'dataAccuracyDeclaration', 'marketingConsent', 'isMinorGuardian'];
 
 async function parseMultipartBody(req: Request): Promise<{ body: Record<string, unknown>; files: Record<string, File> }> {
   const formData = await req.formData();
@@ -37,6 +37,17 @@ const FILE_FIELD_DOCUMENT_TYPE: Record<string, 'RANK_CERTIFICATE' | 'DOJO_PROOF'
 const ALLOWED_DOCUMENT_TYPES = new Set(['application/pdf', 'image/jpeg', 'image/png', 'image/webp']);
 const MAX_DOCUMENT_SIZE = 10 * 1024 * 1024; // 10MB
 
+// Per-field overrides of the defaults above — governmentIdDoc is now a
+// personal photo (see form-configs.ts), not a scanned ID document, so it
+// gets a tighter size range and image-only types.
+const FILE_FIELD_CONSTRAINTS: Record<string, { minBytes?: number; maxBytes: number; allowedTypes: Set<string> }> = {
+  governmentIdDoc: {
+    minBytes: 1 * 1024 * 1024,
+    maxBytes: 2 * 1024 * 1024,
+    allowedTypes: new Set(['image/jpeg', 'image/png', 'image/webp']),
+  },
+};
+
 // Saves uploaded registration documents to disk (public/uploads/documents/...)
 // and records them against the application. Best-effort per file.
 async function saveApplicationDocuments(accountId: string, applicationId: string, files: Record<string, File>) {
@@ -44,8 +55,13 @@ async function saveApplicationDocuments(accountId: string, applicationId: string
     const documentType = FILE_FIELD_DOCUMENT_TYPE[fieldName];
     if (!documentType) continue;
 
-    if (!ALLOWED_DOCUMENT_TYPES.has(file.type) || file.size > MAX_DOCUMENT_SIZE) {
-      console.error(`[REGISTER] Skipped document "${fieldName}": unsupported type or too large (${file.type}, ${file.size} bytes)`);
+    const constraints = FILE_FIELD_CONSTRAINTS[fieldName];
+    const allowedTypes = constraints?.allowedTypes ?? ALLOWED_DOCUMENT_TYPES;
+    const maxBytes = constraints?.maxBytes ?? MAX_DOCUMENT_SIZE;
+    const minBytes = constraints?.minBytes ?? 0;
+
+    if (!allowedTypes.has(file.type) || file.size > maxBytes || file.size < minBytes) {
+      console.error(`[REGISTER] Skipped document "${fieldName}": unsupported type or size out of range (${file.type}, ${file.size} bytes)`);
       continue;
     }
 
@@ -148,6 +164,9 @@ export async function POST(req: Request) {
           fatherName: data.fatherName || null,
           motherName: data.motherName || null,
           medicalInsurance: data.medicalInsurance || null,
+          isMinorGuardian: data.isMinorGuardian ?? false,
+          parentFullName: data.parentFullName || null,
+          parentPhone: data.parentPhone || null,
         },
       });
 
