@@ -301,7 +301,7 @@
         "dojoAddress": "Dojo Address",
         "dojoCity": "City",
         "dojoCountry": "Country",
-        "governmentIdDoc": "ID document photo (optional)",
+        "governmentIdDoc": "Current Photo",
         "dojoProof": "Sports club registration document (PDF or photos)",
         "insuranceDoc": "Documents (medical insurance or other documents) (optional, format: photos or PDF)"
       },
