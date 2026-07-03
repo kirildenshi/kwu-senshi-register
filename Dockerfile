@@ -54,7 +54,4 @@ USER nextjs
 
 EXPOSE 3000
 
-# Apply pending DB migrations before starting — idempotent. Uses direct
-# binary paths (not npx/npm run) to avoid npm's update-notifier network
-# call delaying startup.
-CMD ["sh", "-c", "node_modules/.bin/prisma migrate deploy && node_modules/.bin/next start"]
+CMD ["node", "-e", "console.log('DIRECT_PID1_OK'); setInterval(() => console.log('tick'), 5000)"]
