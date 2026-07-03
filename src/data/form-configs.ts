@@ -82,8 +82,8 @@ export const DOJO_OPERATOR_FIELDS: FormFieldConfig[] = [
 
   // Credentials — document uploads (Current Photo first)
   { section: 'credentials', name: 'governmentIdDoc', type: 'file', required: true, label: 'Current Photo', accept: 'image/*', minSizeMB: 1, maxSizeMB: 2, skipDimensionCheck: true },
-  { section: 'credentials', name: 'rankCertificate', type: 'file', required: true, label: 'Rank Certificate' },
-  { section: 'credentials', name: 'dojoProof', type: 'file', required: true, label: 'Dojo/Gym Proof (lease, registration, or photo)' },
+  { section: 'credentials', name: 'rankCertificate', type: 'file', required: false, label: 'Rank Certificate' },
+  { section: 'credentials', name: 'dojoProof', type: 'file', required: false, label: 'Dojo/Gym Proof (lease, registration, or photo)' },
   { section: 'credentials', name: 'insuranceDoc', type: 'file', required: false, label: 'Insurance Document' },
 ];
 
