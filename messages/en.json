@@ -15,7 +15,7 @@
       "password": "Password",
       "confirm_password": "Confirm password",
       "role": "Select your role",
-      "role_am": "ALLIANCE MEMBER",
+      "role_am": "MEMBER",
       "role_do": "DOJO OPERATOR",
       "role_bc": "BRANCH CHIEF",
       "cta_am": "Continue",
@@ -38,7 +38,7 @@
       "other_roles": "Are you a Dojo Operator or Branch Chief?"
     },
     "registration": {
-      "title": "ALLIANCE MEMBER REGISTRATION",
+      "title": "MEMBER REGISTRATION",
       "title_do": "DOJO OPERATOR APPLICATION",
       "title_bc": "BRANCH CHIEF APPLICATION",
       "section": {
@@ -317,6 +317,7 @@
     "do_step_1": "Application review (2–5 business days)",
     "do_step_2": "Contract email sent to you",
     "do_step_3": "Sign, pay, and your account is activated",
-    "steps_heading": "WHAT HAPPENS NEXT"
+    "steps_heading": "WHAT HAPPENS NEXT",
+    "do_coming_soon_message": "KWU Senshi system is coming soon — stay tuned and get ready."
   }
 }

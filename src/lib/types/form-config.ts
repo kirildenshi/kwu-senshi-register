@@ -68,9 +68,7 @@ export const ACCOUNT_FIELDS = ['password', 'confirmPassword'] as const;
  * Forced field order within a section — fields listed here are sorted to the
  * end of that section regardless of the order stored in the CMS.
  */
-const FIELDS_LAST: Partial<Record<FormSection, string[]>> = {
-  contact: ['telephone'],
-};
+const FIELDS_LAST: Partial<Record<FormSection, string[]>> = {};
 
 export function groupFieldsBySection(
   fields: FormFieldConfig[],

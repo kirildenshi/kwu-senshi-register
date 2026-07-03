@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     default: 'KWU SENSHI — Registration',
     template: '%s | KWU SENSHI',
   },
-  description: 'Register as a KWU SENSHI Alliance Member or Dojo Operator.',
+  description: 'Register as a KWU SENSHI Member or Dojo Operator.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3100'),
 };
 

@@ -19,7 +19,7 @@ const CONFIG: FormConfigResponse = {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
-  const title = 'Alliance Member Registration — KWU SENSHI';
+  const title = 'Member Registration — KWU SENSHI';
   const description = 'Join the global KWU Kyokushin community. Verified ranks, digital credentials, and championship access.';
   return {
     title,

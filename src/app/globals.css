@@ -143,6 +143,10 @@ html, body {
   color: var(--color-text-primary);
 }
 
+button:not(:disabled), [role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
 /* ── KWU form typography scale ── */
 :root {
   --login-text-xs: 1rem;
