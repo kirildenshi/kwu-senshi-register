@@ -17,15 +17,6 @@ interface UseFormNavigationParams {
   checkEmailUniqueness: () => Promise<void>;
   /** Validates required file fields for the current step; returns names of any still missing. */
   validateRequiredFiles: () => string[];
-  /**
-   * Validates the minor/guardian age gate. Zod's object-level `superRefine`
-   * (used for this cross-field check) isn't evaluated by react-hook-form's
-   * `trigger(names)` when given a subset of field names — only a full,
-   * no-args `trigger()` runs it — so it's checked manually here instead,
-   * the same way `validateRequiredFiles` works around file fields being
-   * excluded from the zod schema entirely.
-   */
-  validateMinorGuardian: () => boolean;
 }
 
 export function useFormNavigation({
@@ -43,7 +34,6 @@ export function useFormNavigation({
   getCurrentFieldNames,
   checkEmailUniqueness,
   validateRequiredFiles,
-  validateMinorGuardian,
 }: UseFormNavigationParams) {
   // Animate step transition with slide direction
   const transitionToStep = useCallback((nextStep: number, direction: 'left' | 'right') => {
@@ -62,8 +52,7 @@ export function useFormNavigation({
     const fieldNames = getCurrentFieldNames();
     const isValid = await form.trigger(fieldNames);
     const invalidFileFields = validateRequiredFiles();
-    const minorGuardianValid = validateMinorGuardian();
-    const allFieldNames = [...fieldNames, ...invalidFileFields, 'parentFullName', 'parentPhone'];
+    const allFieldNames = [...fieldNames, ...invalidFileFields];
 
     // Check email uniqueness when leaving the section that contains the email field
     // (personal for new-layout configs, contact for legacy configs)
@@ -75,7 +64,7 @@ export function useFormNavigation({
       }
     }
 
-    if (isValid && invalidFileFields.length === 0 && minorGuardianValid) {
+    if (isValid && invalidFileFields.length === 0) {
       setCompletedSteps((prev) => new Set(prev).add(currentStep));
       transitionToStep(Math.min(currentStep + 1, activeSections.length - 1), 'left');
     } else {
@@ -105,7 +94,6 @@ export function useFormNavigation({
     getCurrentFieldNames,
     checkEmailUniqueness,
     validateRequiredFiles,
-    validateMinorGuardian,
   ]);
 
   const handlePrevious = useCallback(() => {

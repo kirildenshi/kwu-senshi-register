@@ -13,7 +13,7 @@ const GDPR_MESSAGE_KEYS: Record<string, string> = {
 };
 
 // Member personal-data fields that must be Latin-script (no Cyrillic).
-const LATIN_NAME_FIELDS = new Set(['fullName', 'fatherName', 'motherName', 'teacherName', 'parentFullName']);
+const LATIN_NAME_FIELDS = new Set(['fullName', 'fatherName', 'motherName', 'teacherName']);
 const LATIN_TEXT_FIELDS = new Set([
   'naturalCity', 'addressLine1', 'neighborhood', 'city', 'stateProvince',
   'zipCode', 'governmentId', 'medicalInsurance', 'dojoCity',
@@ -100,15 +100,6 @@ function buildFieldValidator(field: FormFieldConfig, tr: Translator, minAge: num
     case 'telephone':
       return z.string().refine(
         (val) => /^\+[1-9]\d{1,14}$/.test(val.replace(/[\s\-().]/g, '')),
-        { message: tr('phone_format') },
-      );
-
-    case 'parentPhone':
-      // Requiredness (when isMinorGuardian is checked) is enforced by the
-      // object-level superRefine in buildRegistrationSchema, not here — this
-      // field is otherwise optional, so an empty value must pass.
-      return z.string().refine(
-        (val) => !val || /^\+[1-9]\d{1,14}$/.test(val.replace(/[\s\-().]/g, '')),
         { message: tr('phone_format') },
       );
 
@@ -275,8 +266,6 @@ export function buildRegistrationSchema(
       : z.boolean().optional();
   }
 
-  const hasMinorGuardianField = fields.some((f) => f.name === 'isMinorGuardian');
-
   return z
     .object(shape)
     .refine((data) => data.password === data.confirmPassword, {
@@ -292,30 +281,7 @@ export function buildRegistrationSchema(
         return true;
       },
       { message: tr('password_email'), path: ['password'] },
-    )
-    .superRefine((data, ctx) => {
-      // Minor/guardian gate — only applies to configs that actually have the
-      // checkbox (Alliance Member). Unchecked: enforce a 16-year minimum age.
-      // Checked: age restriction is lifted, but parent name + phone become required.
-      if (!hasMinorGuardianField) return;
-      const dobStr = data.dateOfBirth as string | undefined;
-      if (!dobStr) return;
-      const age = calculateAge(dobStr);
-      if (age === null) return;
-
-      const isGuardian = data.isMinorGuardian === true;
-      if (!isGuardian && age < 16) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: tr('minAge'), path: ['dateOfBirth'] });
-      }
-      if (isGuardian) {
-        if (!data.parentFullName || String(data.parentFullName).trim() === '') {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: tr('required'), path: ['parentFullName'] });
-        }
-        if (!data.parentPhone || String(data.parentPhone).trim() === '') {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: tr('required'), path: ['parentPhone'] });
-        }
-      }
-    });
+    );
 }
 
 // Calculate password strength (0-4)

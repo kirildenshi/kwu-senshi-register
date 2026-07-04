@@ -55,7 +55,6 @@ export default async function AllianceMemberRegisterPage({
           country: t2('field.country'),
           insuranceDoc: t2('field.insuranceDoc'),
         }}
-        fieldHelperOverrides={{ dateOfBirth: t2('helper.dateOfBirth') }}
         minAge={0}
         gdprFieldsOverride={GDPR_FIELDS_V2}
         dataSourceOverrides={{ dojos: DOJO_OPTIONS }}

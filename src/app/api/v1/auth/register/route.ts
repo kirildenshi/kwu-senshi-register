@@ -9,7 +9,7 @@ import { hashPassword } from '@/lib/auth-utils';
 import { NOT_A_MEMBER_DOJO_ID } from '@/data/form-configs';
 import type { Sex } from '@prisma/client';
 
-const BOOLEAN_FIELDS = ['ageConfirmation', 'dataAccuracyDeclaration', 'marketingConsent', 'isMinorGuardian'];
+const BOOLEAN_FIELDS = ['ageConfirmation', 'dataAccuracyDeclaration', 'marketingConsent'];
 
 async function parseMultipartBody(req: Request): Promise<{ body: Record<string, unknown>; files: Record<string, File> }> {
   const formData = await req.formData();
@@ -164,9 +164,6 @@ export async function POST(req: Request) {
           fatherName: data.fatherName || null,
           motherName: data.motherName || null,
           medicalInsurance: data.medicalInsurance || null,
-          isMinorGuardian: data.isMinorGuardian ?? false,
-          parentFullName: data.parentFullName || null,
-          parentPhone: data.parentPhone || null,
         },
       });
 

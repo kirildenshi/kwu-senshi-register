@@ -11,7 +11,6 @@ import { Save } from 'lucide-react';
 import type { FormConfigResponse, FormFieldConfig, FormSection } from '@/lib/types/form-config';
 import { SECTION_ORDER, groupFieldsBySection } from '@/lib/types/form-config';
 import { buildRegistrationSchema } from '@/lib/validations/registration';
-import { calculateAge } from '@/lib/utils/age';
 import { useDraftAutosave, loadDraft, clearDraft } from '@/lib/hooks/useDraftAutosave';
 import FormField from './FormField';
 import SectionStepper from './SectionStepper';
@@ -275,54 +274,6 @@ export default function FormRenderer({
     return invalidFieldNames;
   }, [currentFields, watchedValues, form, tValidation]);
 
-  // Cross-field minor/guardian gate (Alliance Member's dateOfBirth +
-  // isMinorGuardian checkbox + parentFullName/parentPhone). This lives in
-  // the zod schema too (buildRegistrationSchema's object-level superRefine),
-  // but react-hook-form's `trigger(names)` — used to validate only the
-  // current step's fields — doesn't evaluate object-level superRefine
-  // issues, only a full no-args `trigger()` does. So it's re-checked
-  // manually here and surfaced via form.setError, the same workaround
-  // validateRequiredFiles uses for file fields.
-  const validateMinorGuardian = useCallback(() => {
-    const hasMinorGuardianField = config.fields.some((f) => f.name === 'isMinorGuardian');
-    if (!hasMinorGuardianField) return true;
-
-    const dob = form.getValues('dateOfBirth') as string | undefined;
-    if (!dob) return true;
-    const age = calculateAge(dob);
-    if (age === null) return true;
-
-    let valid = true;
-    const isGuardian = form.getValues('isMinorGuardian') === true;
-
-    if (!isGuardian && age < 16) {
-      form.setError('dateOfBirth', { type: 'manual', message: tValidation('minAge') });
-      valid = false;
-    } else if (form.formState.errors.dateOfBirth?.type === 'manual') {
-      form.clearErrors('dateOfBirth');
-    }
-
-    if (isGuardian) {
-      const parentFullName = form.getValues('parentFullName');
-      if (!parentFullName || String(parentFullName).trim() === '') {
-        form.setError('parentFullName', { type: 'manual', message: tValidation('required') });
-        valid = false;
-      } else {
-        form.clearErrors('parentFullName');
-      }
-
-      const parentPhone = form.getValues('parentPhone');
-      if (!parentPhone || String(parentPhone).trim() === '') {
-        form.setError('parentPhone', { type: 'manual', message: tValidation('required') });
-        valid = false;
-      } else {
-        form.clearErrors('parentPhone');
-      }
-    }
-
-    return valid;
-  }, [config.fields, form, tValidation]);
-
   // Email uniqueness check
   const checkEmailUniqueness = useCallback(async () => {
     const email = form.getValues('email') as string | undefined;
@@ -375,7 +326,6 @@ export default function FormRenderer({
     setAdvancing,
     getCurrentFieldNames,
     validateRequiredFiles,
-    validateMinorGuardian,
     checkEmailUniqueness,
   });
 

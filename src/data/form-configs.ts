@@ -20,9 +20,6 @@ export const ALLIANCE_MEMBER_FIELDS: FormFieldConfig[] = [
   { section: 'personal', name: 'email', type: 'email', required: true, label: 'Email Address' },
   { section: 'personal', name: 'sex', type: 'select', required: true, label: 'Gender', options: ['MASCULINE', 'FEMININE'] },
   { section: 'personal', name: 'dateOfBirth', type: 'date', required: true, label: 'Date of Birth' },
-  { section: 'personal', name: 'isMinorGuardian', type: 'checkbox', required: false, label: 'I am a parent/guardian registering a minor (under 16)' },
-  { section: 'personal', name: 'parentFullName', type: 'text', required: true, label: "Parent/Guardian Full Name (as on ID)", visibleWhen: { isMinorGuardian: true } },
-  { section: 'personal', name: 'parentPhone', type: 'tel', required: true, label: 'Parent/Guardian Contact Phone', visibleWhen: { isMinorGuardian: true } },
   { section: 'personal', name: 'countryOfOrigin', type: 'text', required: true, label: 'Country of Origin' },
 
   // Contact — telephone first (register-2 requirement)

@@ -70,9 +70,6 @@
         "fullName": "Full Name",
         "sex": "Gender",
         "dateOfBirth": "Date of Birth",
-        "isMinorGuardian": "I am a parent/guardian registering a minor (under 16)",
-        "parentFullName": "Parent/Guardian Full Name (as on ID)",
-        "parentPhone": "Parent/Guardian Contact Phone",
         "maritalStatus": "Marital Status",
         "heightCm": "Height (cm)",
         "weightKg": "Weight (kg)",
@@ -214,8 +211,7 @@
         "governmentId": "Passport number or national ID card number",
         "fullName": "As shown on your official ID",
         "trainingStart": "Approximate date when you began training",
-        "governmentIdDoc": "Please upload a photo of yourself in your karate gi",
-        "parentPhone": "International format, e.g. +359888123456"
+        "governmentIdDoc": "Please upload a photo of yourself in your karate gi"
       },
       "select": {
         "MASCULINE": "Male",
@@ -304,9 +300,6 @@
         "governmentIdDoc": "Current Photo",
         "dojoProof": "Sports club registration document (PDF or photos)",
         "insuranceDoc": "Documents (medical insurance or other documents) (optional, format: photos or PDF)"
-      },
-      "helper": {
-        "dateOfBirth": "For persons under 16, please have a parent or guardian complete this information."
       }
     }
   },
