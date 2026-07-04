@@ -16,7 +16,7 @@ const GDPR_MESSAGE_KEYS: Record<string, string> = {
 const LATIN_NAME_FIELDS = new Set(['fullName', 'fatherName', 'motherName', 'teacherName', 'parentFullName']);
 const LATIN_TEXT_FIELDS = new Set([
   'naturalCity', 'addressLine1', 'neighborhood', 'city', 'stateProvince',
-  'zipCode', 'governmentId', 'medicalInsurance',
+  'zipCode', 'governmentId', 'medicalInsurance', 'dojoCity',
 ]);
 
 export function resolveDateToken(token: string | undefined | null): Date | null {

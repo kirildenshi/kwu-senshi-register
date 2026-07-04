@@ -85,7 +85,7 @@ export const fullRegistrationSchema = z
     // DO: the dojo they're registering.
     dojoName: z.string().optional().or(z.literal('')),
     dojoAddress: z.string().optional().or(z.literal('')),
-    dojoCity: z.string().optional().or(z.literal('')),
+    dojoCity: z.string().refine(isLatinText, LATIN_TEXT_MSG).optional().or(z.literal('')),
     dojoCountry: z.string().optional().or(z.literal('')),
     dojoDescription: z.string().optional().or(z.literal('')),
 
