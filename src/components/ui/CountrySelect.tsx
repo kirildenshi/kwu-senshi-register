@@ -63,7 +63,7 @@ export default function CountrySelect({
                   <Check size={14} className="text-senshi-gold-90" />
                 </Select.ItemIndicator>
                 <Select.ItemText>
-                  {isBg ? country.bg : country.en}
+                  {country.en}
                 </Select.ItemText>
               </Select.Item>
             ))}
