@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { isLatinName, isLatinText } from '@/lib/i18n/latin-text';
 import { calculateAge } from '@/lib/utils/age';
+import { NOT_A_MEMBER_DOJO_ID } from '@/data/form-configs';
 
 const LATIN_NAME_MSG = 'Name must use Latin letters only (no Cyrillic)';
 const LATIN_TEXT_MSG = 'This field must use Latin characters only (no Cyrillic)';
@@ -74,6 +75,7 @@ export const fullRegistrationSchema = z
 
     // Dojo — AM: the club they train at (or empty/sentinel for "not a member");
     // DO: the dojo they're registering.
+    dojoId: z.string().optional().or(z.literal('')),
     dojoName: z.string().refine(isLatinName, LATIN_NAME_MSG).optional().or(z.literal('')),
     dojoAddress: z.string().refine(isLatinText, LATIN_TEXT_MSG).optional().or(z.literal('')),
     dojoCity: z.string().refine(isLatinText, LATIN_TEXT_MSG).optional().or(z.literal('')),
@@ -110,5 +112,18 @@ export const fullRegistrationSchema = z
         message: 'You must be at least 16 years old to register.',
         path: ['dateOfBirth'],
       });
+    }
+  })
+  .superRefine((data, ctx) => {
+    // Dojo city/country: required for Dojo Operator (their own dojo), and for
+    // Alliance Member only when they selected an actual dojo (not the
+    // "not a member" sentinel).
+    if (data.role === 'ALLIANCE_MEMBER' && data.dojoId === NOT_A_MEMBER_DOJO_ID) return;
+
+    if (!data.dojoCity) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'This field is required', path: ['dojoCity'] });
+    }
+    if (!data.dojoCountry) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'This field is required', path: ['dojoCountry'] });
     }
   });

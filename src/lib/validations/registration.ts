@@ -4,6 +4,7 @@ import { isLatinName, isLatinText } from '@/lib/i18n/latin-text';
 import { calculateAge } from '@/lib/utils/age';
 import { HIDDEN_FIELDS, GDPR_FIELDS } from '@/components/form/_lib/field-configs';
 import type { FormFieldConfig } from '@/lib/types/form-config';
+import { NOT_A_MEMBER_DOJO_ID } from '@/data/form-configs';
 
 const GDPR_MESSAGE_KEYS: Record<string, string> = {
   acceptTerms: 'accept_terms_required',
@@ -266,6 +267,8 @@ export function buildRegistrationSchema(
       : z.boolean().optional();
   }
 
+  const hasDojoIdField = fields.some((f) => f.name === 'dojoId');
+
   return z
     .object(shape)
     .refine((data) => data.password === data.confirmPassword, {
@@ -281,7 +284,20 @@ export function buildRegistrationSchema(
         return true;
       },
       { message: tr('password_email'), path: ['password'] },
-    );
+    )
+    .superRefine((data, ctx) => {
+      // Alliance Member: dojo city/country are only required when an actual
+      // dojo is selected (not the "not a member" sentinel).
+      if (!hasDojoIdField) return;
+      if (data.dojoId === NOT_A_MEMBER_DOJO_ID) return;
+
+      if (!data.dojoCity) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: tr('required'), path: ['dojoCity'] });
+      }
+      if (!data.dojoCountry) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: tr('required'), path: ['dojoCountry'] });
+      }
+    });
 }
 
 // Calculate password strength (0-4)

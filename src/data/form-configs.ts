@@ -39,8 +39,10 @@ export const ALLIANCE_MEMBER_FIELDS: FormFieldConfig[] = [
   // Martial Arts Background
   { section: 'martialArts', name: 'currentRank', type: 'select', required: true, label: 'Current Rank', options: CURRENT_RANK_OPTIONS },
   { section: 'martialArts', name: 'dojoId', type: 'select', required: true, label: 'Dojo / Club', dataSource: 'dojos' },
-  { section: 'martialArts', name: 'dojoCity', type: 'text', required: true, label: 'Dojo City' },
-  { section: 'martialArts', name: 'dojoCountry', type: 'text', required: true, label: 'Dojo Country' },
+  // Required only when an actual dojo is selected — see the superRefine in
+  // buildRegistrationSchema/fullRegistrationSchema for the NOT_A_MEMBER_DOJO_ID exemption.
+  { section: 'martialArts', name: 'dojoCity', type: 'text', required: false, label: 'Dojo City' },
+  { section: 'martialArts', name: 'dojoCountry', type: 'text', required: false, label: 'Dojo Country' },
 
   // Credentials — document uploads (Current Photo first)
   { section: 'credentials', name: 'governmentIdDoc', type: 'file', required: true, label: 'Current Photo', accept: 'image/*', minSizeMB: 1, maxSizeMB: 2, skipDimensionCheck: true },

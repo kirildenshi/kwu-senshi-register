@@ -17,6 +17,8 @@ interface UseFormNavigationParams {
   checkEmailUniqueness: () => Promise<void>;
   /** Validates required file fields for the current step; returns names of any still missing. */
   validateRequiredFiles: () => string[];
+  /** Validates dojoCity/dojoCountry are filled when an actual dojo is selected. */
+  validateDojoLocation: () => boolean;
 }
 
 export function useFormNavigation({
@@ -34,6 +36,7 @@ export function useFormNavigation({
   getCurrentFieldNames,
   checkEmailUniqueness,
   validateRequiredFiles,
+  validateDojoLocation,
 }: UseFormNavigationParams) {
   // Animate step transition with slide direction
   const transitionToStep = useCallback((nextStep: number, direction: 'left' | 'right') => {
@@ -52,7 +55,8 @@ export function useFormNavigation({
     const fieldNames = getCurrentFieldNames();
     const isValid = await form.trigger(fieldNames);
     const invalidFileFields = validateRequiredFiles();
-    const allFieldNames = [...fieldNames, ...invalidFileFields];
+    const dojoLocationValid = validateDojoLocation();
+    const allFieldNames = [...fieldNames, ...invalidFileFields, 'dojoCity', 'dojoCountry'];
 
     // Check email uniqueness when leaving the section that contains the email field
     // (personal for new-layout configs, contact for legacy configs)
@@ -64,7 +68,7 @@ export function useFormNavigation({
       }
     }
 
-    if (isValid && invalidFileFields.length === 0) {
+    if (isValid && invalidFileFields.length === 0 && dojoLocationValid) {
       setCompletedSteps((prev) => new Set(prev).add(currentStep));
       transitionToStep(Math.min(currentStep + 1, activeSections.length - 1), 'left');
     } else {
@@ -94,6 +98,7 @@ export function useFormNavigation({
     getCurrentFieldNames,
     checkEmailUniqueness,
     validateRequiredFiles,
+    validateDojoLocation,
   ]);
 
   const handlePrevious = useCallback(() => {

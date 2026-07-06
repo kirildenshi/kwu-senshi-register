@@ -27,6 +27,7 @@ import {
 } from './_lib/field-configs';
 import { getFieldTranslations as buildFieldTranslations } from './_lib/get-field-translations';
 import { useFormNavigation } from './_hooks/useFormNavigation';
+import { NOT_A_MEMBER_DOJO_ID } from '@/data/form-configs';
 
 interface FormRendererProps {
   config: FormConfigResponse;
@@ -274,6 +275,33 @@ export default function FormRenderer({
     return invalidFieldNames;
   }, [currentFields, watchedValues, form, tValidation]);
 
+  // dojoCity/dojoCountry are conditionally required (only when an actual dojo
+  // is selected) via a schema-level superRefine, which form.trigger(names)
+  // does not evaluate for a partial field list — only a full form.trigger()
+  // does. Check it manually here, same pattern as validateRequiredFiles.
+  const validateDojoLocation = useCallback(() => {
+    const hasDojoIdField = config.fields.some((f) => f.name === 'dojoId');
+    if (!hasDojoIdField) return true;
+
+    const dojoId = form.getValues('dojoId') as string | undefined;
+    if (dojoId === NOT_A_MEMBER_DOJO_ID) {
+      form.clearErrors('dojoCity');
+      form.clearErrors('dojoCountry');
+      return true;
+    }
+
+    let valid = true;
+    for (const name of ['dojoCity', 'dojoCountry']) {
+      if (form.getValues(name)) {
+        form.clearErrors(name);
+      } else {
+        form.setError(name, { type: 'required', message: tValidation('required') });
+        valid = false;
+      }
+    }
+    return valid;
+  }, [config.fields, form, tValidation]);
+
   // Email uniqueness check
   const checkEmailUniqueness = useCallback(async () => {
     const email = form.getValues('email') as string | undefined;
@@ -326,6 +354,7 @@ export default function FormRenderer({
     setAdvancing,
     getCurrentFieldNames,
     validateRequiredFiles,
+    validateDojoLocation,
     checkEmailUniqueness,
   });
 
