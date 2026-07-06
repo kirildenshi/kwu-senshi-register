@@ -13,10 +13,10 @@ const GDPR_MESSAGE_KEYS: Record<string, string> = {
 };
 
 // Member personal-data fields that must be Latin-script (no Cyrillic).
-const LATIN_NAME_FIELDS = new Set(['fullName', 'fatherName', 'motherName', 'teacherName']);
+const LATIN_NAME_FIELDS = new Set(['fullName', 'fatherName', 'motherName', 'teacherName', 'dojoName']);
 const LATIN_TEXT_FIELDS = new Set([
   'naturalCity', 'addressLine1', 'neighborhood', 'city', 'stateProvince',
-  'zipCode', 'governmentId', 'medicalInsurance', 'dojoCity',
+  'zipCode', 'governmentId', 'medicalInsurance', 'dojoCity', 'dojoAddress',
 ]);
 
 export function resolveDateToken(token: string | undefined | null): Date | null {
