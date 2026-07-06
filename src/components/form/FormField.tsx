@@ -46,7 +46,7 @@ function FieldLabel({ field, translations }: FormFieldProps) {
   return (
     <label htmlFor={field.name} className="flex items-center text-body-sm font-semibold text-senshi-grey-70">
       {translations.label}
-      {field.required ? (
+      {field.required || field.visuallyRequired ? (
         <span className="ml-1 text-status-error">*</span>
       ) : translations.optionalLabel ? (
         <span className="ml-1.5 text-senshi-grey-60 font-normal">{translations.optionalLabel}</span>

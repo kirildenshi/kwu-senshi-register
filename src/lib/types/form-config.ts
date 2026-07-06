@@ -39,6 +39,8 @@ export interface FormFieldConfig {
   maxSizeMB?: number;
   /** File fields only — skips FileInput's default 400x400px minimum image dimension check. */
   skipDimensionCheck?: boolean;
+  /** Shows the required asterisk even when `required` is false (conditionally-required fields). */
+  visuallyRequired?: boolean;
 }
 
 export interface FormConfigResponse {

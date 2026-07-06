@@ -23,7 +23,7 @@ export function getFieldTranslations(t: Translator, field: FormFieldConfig) {
     ),
     helper: t.has(`helper.${field.name}`) ? t(`helper.${field.name}`) : undefined,
     tooltip: t.has(`tooltip.${field.name}`) ? t(`tooltip.${field.name}`) : undefined,
-    optionalLabel: field.required ? undefined : t('optional'),
+    optionalLabel: (field.required || field.visuallyRequired) ? undefined : t('optional'),
     strengthLabels: {
       weak: t('password_strength.weak'),
       fair: t('password_strength.fair'),
