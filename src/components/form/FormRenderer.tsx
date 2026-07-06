@@ -280,7 +280,7 @@ export default function FormRenderer({
   // does not evaluate for a partial field list — only a full form.trigger()
   // does. Check it manually here, same pattern as validateRequiredFiles.
   const validateDojoLocation = useCallback(() => {
-    const hasDojoIdField = config.fields.some((f) => f.name === 'dojoId');
+    const hasDojoIdField = currentFields.some((f) => f.name === 'dojoId');
     if (!hasDojoIdField) return true;
 
     const dojoId = form.getValues('dojoId') as string | undefined;
@@ -300,7 +300,7 @@ export default function FormRenderer({
       }
     }
     return valid;
-  }, [config.fields, form, tValidation]);
+  }, [currentFields, form, tValidation]);
 
   // Email uniqueness check
   const checkEmailUniqueness = useCallback(async () => {
